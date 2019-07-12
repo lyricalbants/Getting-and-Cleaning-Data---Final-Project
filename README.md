@@ -1,0 +1,2 @@
+# Getting-and-Cleaning-Data---Final-Project
+Merged two datasets, training and test data. Extracted only the measurements on the mean and standard deviation for each measurement. Used descriptive activity names to name the activities in the data set. Labeled the dataset with descriptive variable names. Finally, created a new dataset , with the average of each variable for each activity and each subject in the first dataset.
