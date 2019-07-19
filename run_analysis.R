@@ -32,6 +32,18 @@ activity <- separate(activity, X1, into = c("index", "activity"), sep = " ")
 feature <- fread('./data/UCI HAR Dataset/features.txt')
 names(feature) <- c("index", "features")
 
+# Make features a bit descriptive
+feature$features <- gsub("BodyBody", "Body", feature$features, fixed = T)
+feature$features <- gsub("tBody", "TimeBody", feature$features, fixed = T)
+feature$features <- gsub("Acc", "Acceleration", feature$features, fixed = T)
+feature$features <- gsub("tGravity", "TimeGravity", feature$features, fixed = T)
+feature$features <- gsub("Mag", "Magnetic", feature$features, fixed = T)
+feature$features <- gsub("Freq", "Frequency", feature$features, fixed = T)
+feature$features <- gsub("fBody", "FrequencyBody", feature$features, fixed = T)
+feature$features <- gsub("()", "", feature$features, fixed = T)
+feature$features <- gsub("-", ".", feature$features, fixed = T)
+
+
 ## open the subject_test text file in the test folder
 sub_test <- read_csv('./data/UCI HAR Dataset/test/subject_test.txt', col_names = "subject", 
                      col_types = cols(.default = col_factor()))
@@ -42,6 +54,7 @@ test_set <- read_delim('./data/UCI HAR Dataset/test/X_test.txt',
 )
 test_set <- as_tibble(test_set, .name_repair = "universal")
 names(test_set) <- tolower(names(test_set))
+
 ## extract mean and sd of features in the test dataset
 test_ms <- bind_cols(select(test_set, contains("mean")), select(test_set, contains("std")))
 
@@ -74,6 +87,7 @@ train_set <- read_delim('./data/UCI HAR Dataset/train/X_train.txt',
 )
 train_set <- as_tibble(train_set, .name_repair = "universal")
 names(train_set) <- tolower(names(train_set))
+
 ## extract mean and sd of features in the train dataset
 train_ms <- bind_cols(select(train_set, contains("mean")), select(train_set, contains("std")))
 
@@ -93,7 +107,7 @@ data <- right_join(df, df1)
 # -------------------------------------------------------------------#
 # create a different dataset by using id and labels columns as factor variables.
 factoredData <- group_by(data, subject, activity)
-tidydata <- summarize_each(factoredData, mean, (tbodyacc.mean...x:fbodybodygyrojerkmag.std..))
+tidydata <- summarize_each(factoredData, mean, (timebodyacceleration.mean.x:frequencybodygyrojerkmagnetic.std))
 
 # Export tidydata as text file
 write_delim(tidydata, "tidy.txt")
